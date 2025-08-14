@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Ícones - Loja de Bebidas</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; background: #f0f2f6;">
+    <h1 style="text-align: center; color: #333;">🍺 Gerador de Ícones PWA</h1>
+    
+    <div style="display: flex; justify-content: center; gap: 30px; margin: 30px 0;">
+        <!-- Ícone 192x192 -->
+        <div style="text-align: center;">
+            <h3>Ícone 192x192px</h3>
+            <canvas id="icon192" width="192" height="192" style="border: 2px solid #ddd; border-radius: 15px;"></canvas>
+            <br><br>
+            <button onclick="downloadIcon('icon192', 'icon-192.png')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;">📥 Baixar 192px</button>
+        </div>
+        
+        <!-- Ícone 512x512 -->
+        <div style="text-align: center;">
+            <h3>Ícone 512x512px</h3>
+            <canvas id="icon512" width="512" height="512" style="border: 2px solid #ddd; border-radius: 15px; max-width: 192px; height: auto;"></canvas>
+            <br><br>
+            <button onclick="downloadIcon('icon512', 'icon-512.png')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;">📥 Baixar 512px</button>
+        </div>
+    </div>
+    
+    <div style="text-align: center; background: white; padding: 20px; border-radius: 15px; margin: 30px auto; max-width: 600px;">
+        <h3>📋 Instruções:</h3>
+        <p><strong>1.</strong> Clique nos botões para baixar os ícones</p>
+        <p><strong>2.</strong> Salve ambos os arquivos na pasta do seu projeto</p>
+        <p><strong>3.</strong> Os ícones já estão otimizados para PWA!</p>
+    </div>
+
+    <script>
+        function createIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            
+            // Rounded rectangle background
+            const radius = size * 0.1;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fill();
+            
+            // Beer emoji/icon
+            ctx.font = `${size * 0.5}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('🍺', size / 2, size / 2);
+            
+            // Add text "LB" below
+            ctx.font = `bold ${size * 0.15}px Arial`;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('LOJA', size / 2, size * 0.8);
+        }
+        
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Polyfill para roundRect se não existir
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+        
+        // Criar os ícones quando a página carregar
+        window.onload = function() {
+            createIcon('icon192', 192);
+            createIcon('icon512', 512);
+        };
+    </script>
+</body>
+</html>
